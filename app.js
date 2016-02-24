@@ -1,7 +1,15 @@
-var Node = require( './components/Node' );
+var Network = require( './components/Network.js' );
 
-var node1 = new Node( 1 );
-var node2 = new Node( 2 );
+var testingNetwork = new Network();
 
-node1.printId();
-node2.printId();
+var nodeId1 = testingNetwork.addNode();
+var nodeId2 = testingNetwork.addNode();
+var nodeId3 = testingNetwork.addNode();
+var nodeId4 = testingNetwork.addNode();
+
+testingNetwork.addLink( nodeId1, nodeId2 );
+testingNetwork.addLink( nodeId1, nodeId4 );
+testingNetwork.addLink( nodeId2, nodeId3 );
+testingNetwork.addLink( nodeId3, nodeId4 );
+
+testingNetwork.printNetwork();
