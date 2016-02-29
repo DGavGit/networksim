@@ -1,9 +1,11 @@
 var Node = require( './Node' );
+var Link = require( './Link' );
 
 var nodeTable = {};
 var linkTable = {};
 
-var nodeTableLength = 0;
+var nodeCounter = 0;
+var linkCounter = 0;
 
 /**
  * Represents a network.
@@ -17,20 +19,25 @@ var Network = function() {
  * @returns {Number} nodeId
  */
 Network.prototype.addNode = function() {
-    nodeTable[ nodeTableLength ] = new Node( nodeTableLength );
-    linkTable[ nodeTableLength ] = [];
+    nodeTable[ nodeCounter ] = new Node( nodeCounter );
+    linkTable[ nodeCounter ] = [];
 
-    return nodeTableLength++;
+    return nodeCounter++;
 }
 
 /**
  * Adds a bidirectional link between two nodes.
  * @param {Number} nodeId1
  * @param {Number} nodeId2
+ * @param {Number} rate - units of Mb/s
  */
-Network.prototype.addLink = function( nodeId1, nodeId2 ) {
-    linkTable[ nodeId1 ].push( nodeId2 );
-    linkTable[ nodeId2 ].push( nodeId1 );
+Network.prototype.addLink = function( nodeId1, nodeId2, rate ) {
+    var link = new Link( linkCounter, nodeId1, nodeId2, rate );
+
+    linkTable[ nodeId1 ].push( link );
+    linkTable[ nodeId2 ].push( link );
+
+    return linkCounter++;
 }
 
 /**

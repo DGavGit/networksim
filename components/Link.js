@@ -47,4 +47,12 @@ Link.prototype.setBufferSize = function( bufferSize ) {
     this.bufferSize = bufferSize;
 }
 
+/**
+ * Returns the id of a link.
+ * @returns {String} id
+ */
+Link.prototype.getLinkId = function() {
+    return this.id;
+}
+
 module.exports = Link;

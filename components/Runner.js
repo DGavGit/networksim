@@ -1,7 +1,7 @@
 /**
  * Represents a runner, the object that deals with the timing and execution of the simulation.
  * @constructor
- * @param {Runner} network
+ * @param {Network} network
  */
 var Runner = function( network ) {
     this.network = network;
