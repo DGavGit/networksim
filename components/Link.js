@@ -5,14 +5,15 @@
  * @param {Node} sourceNode
  * @param {Node} destinationNode
  * @param {Number} rate - units of Mb/s
+ * @param {Number} bufferSize - units of Kb
  */
-var Link = function( linkId, sourceNode, destinationNode, rate ) {
+var Link = function( linkId, sourceNode, destinationNode, rate, bufferSize ) {
     this.id = linkId;
     this.addSourceNode( sourceNode );
     this.addDestinationNode( destinationNode );
     this.addRate( rate );
     this.buffer = [];
-    this.setBufferSize( 100 );
+    this.setBufferSize( bufferSize );
 }
 
 /**

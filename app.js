@@ -1,7 +1,7 @@
 var Network = require( './components/Network' );
 var Runner = require( './components/Runner' );
 
-// Create network
+// Create test network
 var testingNetwork = new Network();
 
 var nodeId1 = testingNetwork.addNode();
@@ -14,9 +14,9 @@ testingNetwork.addLink( nodeId1, nodeId4, 10 );
 testingNetwork.addLink( nodeId2, nodeId3, 10 );
 testingNetwork.addLink( nodeId3, nodeId4, 10 );
 
-testingNetwork.printNetwork();
+//testingNetwork.printNetwork();
 
-// Run the simulation
+// Run the test simulation
 var runner = new Runner( testingNetwork );
 
 var test1 = function() {
@@ -30,3 +30,14 @@ runner.addEvent( test1 );
 runner.addEvent( test2 );
 
 runner.run();
+
+/*
+ * Test Case 1
+ */
+var case1Network = new Network();
+
+var c1NodeId1 = case1Network.addNode();
+var c1NodeId2 = case1Network.addNode();
+
+var c1LinkId1 = case1Network.addLink( c1NodeId1, c1NodeId2, 10, 64 );
+var case1Flow = case1Network.addFlow( c1LinkId1, c1NodeId1 ,1000, 20000 );
