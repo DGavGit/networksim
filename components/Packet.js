@@ -1,11 +1,13 @@
 /**
  * Represents a packet in a network.
  * @constructor
+ * @param {Number} size
  * @param {String} data
  * @param {Node} sourceNode
  * @param {Node} destinationNode
  */
-var Packet = function( data, sourceNode, destinationNode ) {
+var Packet = function( size, data, sourceNode, destinationNode ) {
+    this.size = size;
     this.data = data;
     this.addSourceNode( sourceNode );
     this.addDestinationNode( destinationNode );

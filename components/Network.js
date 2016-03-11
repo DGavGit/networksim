@@ -23,6 +23,7 @@ var Network = function() {
 Network.prototype.addNode = function() {
     this.nodeTable[ this.nodeCounter ] = new Node( this.nodeCounter );
     this.linkTable[ this.nodeCounter ] = [];
+    this.flowTable[ this.nodeCounter ] = [];
 
     return this.nodeCounter++;
 }
@@ -40,22 +41,20 @@ Network.prototype.addLink = function( nodeId1, nodeId2, rate, bufferSize ) {
     this.linkTable[ nodeId1 ].push( link );
     this.linkTable[ nodeId2 ].push( link );
 
-    this.flowTable[ this.linkCounter ]  = [];
-
     return this.linkCounter++;
 }
 
 /**
- * Adds a directed flow along a link, starting at one of the nodes.
- * @param {Number} linkId
- * @param {Number} startingNodeId
+ * Adds a directed flow from one node to another.
  * @param {Number} startTime - units of ms (default 0)
- * @param {Number} dataSize - units of Mb
+ * @param {Number} dataSize - units of Kb (default 100)
+ * @param {Number} sourceNodeId
+ * @param {Number} destinationNodeId
  */
-Network.prototype.addFlow = function( linkId, startingNodeId, startTime, dataSize ) {
-    var flow = new Flow( this.flowCounter, linkId, startingNodeId, startTime || 0, dataSize );
+Network.prototype.addFlow = function( startTime, dataSize, sourceNodeId, destinationNodeId ) {
+    var flow = new Flow( this.flowCounter, startTime || 0, dataSize || 100, this.nodeTable[ this.sourceNodeId ], this.nodeTable[ destinationNodeId ] );
 
-    this.flowTable[ linkId ].push( flow );
+    this.flowTable[ sourceNodeId ].push( flow );
 
     return this.flowCounter++;
 }
