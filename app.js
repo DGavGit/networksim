@@ -40,5 +40,6 @@ var c1NodeId1 = case1Network.addNode();
 var c1NodeId2 = case1Network.addNode();
 
 var c1LinkId1 = case1Network.addLink( c1NodeId1, c1NodeId2, 10, 64 );
-var case1Flow = case1Network.addFlow( 0, 1, c1NodeId1, c1NodeId2 );
+var c1FlowId = case1Network.addFlow( 0, 1, c1NodeId1, c1NodeId2 );
 case1Network.printNetwork();
+case1Network.sendData(c1FlowId, "testing");
