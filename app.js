@@ -1,5 +1,10 @@
 var Network = require( './components/Network' );
 var Runner = require( './components/Runner' );
+var crypto = require( 'crypto' );
+
+var generateBytes = function(size) {
+    return crypto.randomBytes(size * 3 / 4).toString('base64');
+};
 
 // Create test network
 var testingNetwork = new Network();
@@ -43,4 +48,6 @@ var c1LinkId1 = case1Network.addLink( c1NodeId1, c1NodeId2, 10, 64 );
 var c1FlowId = case1Network.addFlow( 0, 1, c1NodeId1, c1NodeId2 );
 case1Network.printNetwork();
 console.log( "\nSending message" );
-case1Network.sendData( c1FlowId, "testing" );
+var data = generateBytes(10000000); // 10 Mb
+console.log(data.length);
+case1Network.sendData( c1FlowId, data );

@@ -79,7 +79,7 @@ Network.prototype.sendData = function( flowId, data ) {
 
     flow.destinationNode.on( 'messageArrived', function( packet ) {
         console.log( 'Message arrived' );
-        console.log( packet );
+        console.log( 'id: ' + packet.id + '\nsize: ' + packet.size );
         flow.sourceNode.emit( 'ack', packet.id );
     });
 
@@ -95,13 +95,13 @@ Network.prototype.sendData = function( flowId, data ) {
 /**
  * Helper function to divide data into packets based on flow size.
  * @param {String} data
- * @param {Number} dataSize - units of Kb
+ * @param {Number} dataSize - units of Mb
  * @param {Node} sourceNode
  * @param {Node} destinationNode
  */
 var createPackets = function( data, dataSize, sourceNode, destinationNode ) {
     var packets = [];
-    dataSize *= 1024; // Convert to bytes from Kb
+    dataSize *= 1000000; // Convert to bytes from Mb
     for (var i = 0; i < data.length; i += dataSize) {
         var pData = data.substring( i, i + dataSize );
         // TODO: Should we pad the last packet to fit dataSize?
