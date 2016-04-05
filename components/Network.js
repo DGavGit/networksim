@@ -2,6 +2,11 @@ var Node = require( './Node' );
 var Link = require( './Link' );
 var Flow = require( './Flow' );
 var Packet = require( './Packet' );
+var crypto = require( 'crypto' );
+
+var generateBytes = function(size) {
+    return crypto.randomBytes(size * 3 / 4).toString('base64');
+};
 
 /**
  * Represents a network.
@@ -47,12 +52,12 @@ Network.prototype.addLink = function( nodeId1, nodeId2, rate, bufferSize ) {
 /**
  * Adds a directed flow from one node to another.
  * @param {Number} startTime - units of ms (default 0)
- * @param {Number} dataSize - units of Kb (default 100)
+ * @param {Number} dataSize - units of Mb (default 10)
  * @param {Number} sourceNodeId
  * @param {Number} destinationNodeId
  */
 Network.prototype.addFlow = function( startTime, dataSize, sourceNodeId, destinationNodeId ) {
-    var flow = new Flow( this.flowCounter, startTime || 0, dataSize || 100, this.nodeTable[ sourceNodeId ], this.nodeTable[ destinationNodeId ] );
+    var flow = new Flow( this.flowCounter, startTime || 0, dataSize || 10, this.nodeTable[ sourceNodeId ], this.nodeTable[ destinationNodeId ] );
 
     this.flowTable[ this.flowCounter ] = flow;
 
@@ -71,11 +76,12 @@ Network.prototype.printNetwork = function() {
 /**
  * Sends data along a flow in the network.
  * @param {Number} flowId
- * @param {String} data
+ * @param {Number} dataSize - units of Mb
  */
-Network.prototype.sendData = function( flowId, data ) {
+Network.prototype.sendData = function( flowId, dataSize ) {
     var flow = this.flowTable[ flowId ];
-    var packets = createPackets( data, flow.dataSize, flow.sourceNode, flow.destinationNode );
+    var packets = createPackets( dataSize, flow.dataSize, flow.sourceNode, flow.destinationNode );
+    console.log(packets);
 
     flow.destinationNode.on( 'messageArrived', function( packet ) {
         console.log( 'Message arrived' );
@@ -94,18 +100,16 @@ Network.prototype.sendData = function( flowId, data ) {
 
 /**
  * Helper function to divide data into packets based on flow size.
- * @param {String} data
  * @param {Number} dataSize - units of Mb
+ * @param {Number} flowSize - units of Mb
  * @param {Node} sourceNode
  * @param {Node} destinationNode
  */
-var createPackets = function( data, dataSize, sourceNode, destinationNode ) {
+var createPackets = function( dataSize, flowSize, sourceNode, destinationNode ) {
     var packets = [];
-    dataSize *= 1000000; // Convert to bytes from Mb
-    for (var i = 0; i < data.length; i += dataSize) {
-        var pData = data.substring( i, i + dataSize );
+    for (var i = 0; i < dataSize; i += flowSize) {
         // TODO: Should we pad the last packet to fit dataSize?
-        var packet = new Packet( i / dataSize, pData.length, pData, sourceNode, destinationNode );
+        var packet = new Packet( i / flowSize, (flowSize > (dataSize - i) ? (dataSize - i) : flowSize), sourceNode, destinationNode );
         packets.push( packet );
     }
     return packets;

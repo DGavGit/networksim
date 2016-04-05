@@ -3,14 +3,12 @@
  * @constructor
  * @param {Number} id
  * @param {Number} size
- * @param {String} data
  * @param {Node} sourceNode
  * @param {Node} destinationNode
  */
-var Packet = function( id, size, data, sourceNode, destinationNode ) {
+var Packet = function( id, size, sourceNode, destinationNode ) {
     this.id = id;
     this.size = size;
-    this.data = data;
     this.addSourceNode( sourceNode );
     this.addDestinationNode( destinationNode );
 }
