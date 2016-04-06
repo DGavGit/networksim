@@ -2,13 +2,15 @@
  * Represents a packet in a network.
  * @constructor
  * @param {Number} id
+ * @param {String} type
  * @param {Number} size
  * @param {Node} sourceNode
  * @param {Node} destinationNode
  * @param {function} callback - for acking packets
  */
-var Packet = function( id, size, sourceNode, destinationNode, callback ) {
+var Packet = function( id, type, size, sourceNode, destinationNode, callback ) {
     this.id = id;
+    this.type = type;
     this.size = size;
     this.addSourceNode( sourceNode );
     this.addDestinationNode( destinationNode );

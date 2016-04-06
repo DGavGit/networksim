@@ -45,7 +45,7 @@ Flow.prototype.addDestinationNode = function ( destinationNode ) {
 Flow.prototype.sendData = function() {
     // Generate packets
     for( var i = 0; i < this.packetCount; i++ )
-        this.packets.push(new Packet( i, 1024, this.sourceNode, this.destinationNode, this.sendCallback ));
+        this.packets.push(new Packet( i, 'data', 1024, this.sourceNode, this.destinationNode, this.sendCallback ));
 
     this.sendMorePackets();
 }
