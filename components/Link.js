@@ -30,20 +30,43 @@ Link.prototype.getLinkId = function() {
 }
 
 /**
- * Adds a packet to the buffer
- * @param {Packet} packet
- * @returns true if packet is added to buffer
+ * Adds a packet array to the buffer
+ * @param {Array[Packet]} packets
+ * @returns true if packets are added to buffer
  *          false if buffer is full
  */
-Link.prototype.addPacket = function(packet) {
-    var packetSize = packet.getSize();
-    if (this.bufferSize + packetSize > this.bufferCapacity) {
-        return false;
+Link.prototype.addPackets = function(packets) {
+    for (var i = 0; i < packets.length; ++i) {
+        var packet = packets[i];
+        var packetSize = packet.getSize();
+        if (this.bufferSize + packetSize > this.bufferCapacity) {
+            return false;
+        }
+
+        this.buffer.push(packet);
+        this.bufferSize += packetSize;
     }
 
-    this.buffer.push(packet);
-    this.bufferSize += packetSize;
     return true;
+}
+
+/**
+ * Removes as many packets from the buffer as possible (in a row)
+ * @param {Node} destination - to know if we can remove a packet
+ * @returns {Array[Packet]} array of packets that were removed
+ */
+Link.prototype.removePackets = function( destination ) {
+    var packets = [];
+    for (var i = 0; i < this.buffer.length; ++i) {
+        if (this.buffer[0].destinationNode == destination) {
+            packets.push(this.buffer.shift());
+            this.bufferSize -= packet.getSize();
+        } else {
+            break;
+        }
+    }
+
+    return packets;
 }
 
 /**

@@ -5,12 +5,14 @@
  * @param {Number} size
  * @param {Node} sourceNode
  * @param {Node} destinationNode
+ * @param {function} callback - for acking packets
  */
-var Packet = function( id, size, sourceNode, destinationNode ) {
+var Packet = function( id, size, sourceNode, destinationNode, callback ) {
     this.id = id;
     this.size = size;
     this.addSourceNode( sourceNode );
     this.addDestinationNode( destinationNode );
+    this.callback = callback;
 }
 
 /**

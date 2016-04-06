@@ -45,8 +45,9 @@ Flow.prototype.addDestinationNode = function ( destinationNode ) {
 Flow.prototype.sendData = function() {
     // Generate packets
     for( var i = 0; i < this.packetCount; i++ )
-        this.packets.push(new Packet( i, 1024, this.sourceNode, this.destinationNode ));
-    
+        this.packets.push(new Packet( i, 1024, this.sourceNode, this.destinationNode, this.sendCallback ));
+
+    this.sendMorePackets();
 }
 
 Flow.prototype.sendCallback = function( ackNumber ) {
@@ -65,7 +66,7 @@ Flow.prototype.sendCallback = function( ackNumber ) {
 
 Flow.prototype.updateWindowSize = function( type ) {
     switch( type ) {
-        case 'success':  
+        case 'success':
             this.tcp.cWin *= 2;
             return this.tcp.cWin;
             break;
@@ -83,12 +84,14 @@ Flow.prototype.sendMorePackets = function() {
         count: 0
     };
 
+    var newPackets = [];
     for( var i = 0; i < Math.min( this.tcp.cWin, this.packets.length ), i++ ) {
         var packet = this.packets.shift();
         this.outstandingPackets.count++;
         this.outstandingPackets[packet.getId()] = packet;
-        this.sourceNode.send( packet, this.sendCallback );
+        newPackets.push(packet);
     }
+    this.sourceNode.send( newPackets );
 };
 
 module.exports = Flow;
