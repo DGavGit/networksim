@@ -29,4 +29,18 @@ Packet.prototype.addDestinationNode = function( destinationNode ) {
     this.destinationNode = destinationNode;
 }
 
+/**
+ * @returns packet size
+ */
+Packet.prototype.getSize = function() {
+    return this.size;
+}
+
+/**
+ * @returns packet id 
+ */
+Packet.prototype.getId = function() {
+    return this.id;
+}
+
 module.exports = Packet;

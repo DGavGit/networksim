@@ -80,7 +80,9 @@ Network.prototype.printNetwork = function() {
  */
 Network.prototype.sendData = function( flowId, dataSize ) {
     var flow = this.flowTable[ flowId ];
-    var packets = createPackets( dataSize, flow.dataSize, flow.sourceNode, flow.destinationNode );
+    flow.sendData( dataSize );
+
+    /*var packets = createPackets( dataSize, flow.dataSize, flow.sourceNode, flow.destinationNode );
     console.log(packets);
 
     flow.destinationNode.on( 'messageArrived', function( packet ) {
@@ -95,7 +97,7 @@ Network.prototype.sendData = function( flowId, dataSize ) {
 
     for (var i = 0; i < packets.length; ++i) {
         flow.destinationNode.emit( 'messageArrived', packets[i] );
-    }
+    }*/
 }
 
 /**

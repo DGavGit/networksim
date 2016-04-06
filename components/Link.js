@@ -5,15 +5,16 @@
  * @param {Node} sourceNode
  * @param {Node} destinationNode
  * @param {Number} rate - units of Mb/s
- * @param {Number} bufferSize - units of Kb
+ * @param {Number} bufferCapacity - units of Kb
  */
-var Link = function( linkId, sourceNode, destinationNode, rate, bufferSize ) {
+var Link = function( linkId, sourceNode, destinationNode, rate, bufferCapacity ) {
     this.id = linkId;
     this.addSourceNode( sourceNode );
     this.addDestinationNode( destinationNode );
     this.addRate( rate );
     this.buffer = [];
-    this.setBufferSize( bufferSize );
+    this.bufferCapacity = bufferCapacity;
+    this.bufferSize = 0;
 }
 
 /**
@@ -41,19 +42,43 @@ Link.prototype.addRate = function( rate ) {
 }
 
 /**
- * Sets the buffer size of a link.
- * @param {Number} bufferSize - units of KB
- */
-Link.prototype.setBufferSize = function( bufferSize ) {
-    this.bufferSize = bufferSize;
-}
-
-/**
  * Returns the id of a link.
  * @returns {String} id
  */
 Link.prototype.getLinkId = function() {
     return this.id;
+}
+
+/**
+ * Adds a packet to the buffer
+ * @param {Packet} packet
+ * @returns true if packet is added to buffer
+ *          false if buffer is full
+ */
+Link.prototype.addPacket = function(packet) {
+    var packetSize = packet.getSize();
+    if (this.bufferSize + packetSize > this.bufferCapacity) {
+        return false;
+    }
+
+    this.buffer.push(packet);
+    this.bufferSize += packetSize;
+    return true;
+}
+
+/**
+ * Removes a packet from the buffer
+ * @returns packet if packet is removed from buffer
+ *          false if buffer is already empty
+ */
+Link.prototype.removePacket = function() {
+    if (buffer.length == 0) {
+        return false;
+    }
+
+    var packet = buffer.shift();
+    this.bufferSize -= packet.getSize();
+    return packet;
 }
 
 module.exports = Link;
