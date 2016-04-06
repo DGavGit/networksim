@@ -1,4 +1,4 @@
-var Node = require( './Node' );
+var Host = require( './Host' );
 var Link = require( './Link' );
 var Flow = require( './Flow' );
 var Packet = require( './Packet' );
@@ -27,7 +27,7 @@ var Network = function() {
  * @returns {Number} nodeId
  */
 Network.prototype.addNode = function() {
-    this.nodeTable[ this.nodeCounter ] = new Node( this.nodeCounter );
+    this.nodeTable[ this.nodeCounter ] = new Host( this.nodeCounter );
     this.linkTable[ this.nodeCounter ] = [];
 
     return this.nodeCounter++;
@@ -41,7 +41,9 @@ Network.prototype.addNode = function() {
  * @param {Number} bufferSize - units of Kb (default 100)
  */
 Network.prototype.addLink = function( nodeId1, nodeId2, rate, bufferSize ) {
-    var link = new Link( this.linkCounter, nodeId1, nodeId2, rate, bufferSize || 100 );
+    var link = new Link( this.linkCounter, rate, bufferSize || 100 );
+    nodeTable[ nodeId1 ].addLink( link, nodeTable[ nodeId2 ]);
+    nodeTable[ nodeId2 ].addLink( link, nodeTable[ nodeId1 ]);
 
     this.linkTable[ nodeId1 ].push( link );
     this.linkTable[ nodeId2 ].push( link );
