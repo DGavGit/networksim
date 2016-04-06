@@ -1,3 +1,5 @@
+var Packet = require( './Packet' );
+
 var TCP_SLOW_START = 'SLOW_START';
 var TCP_CONGESTION_AVOIDANCE = 'CONGESTION_AVOIDANCE';
 var TCP_FAST_RECOVERY = 'FAST_RECOVERY';
@@ -17,10 +19,14 @@ var Flow = function( flowId, startTime, dataSize, sourceNode, destinationNode ) 
     this.dataSize = dataSize;
     this.packetCount = dataSize * 1024;
     this.packets = [];
+    this.outstandingPackets = {
+        count: 0
+    };
     this.addSourceNode( sourceNode );
     this.addDestinationNode( destinationNode );
     this.tcp = {
-        cWin: 1,
+        //cWin: 1,
+        cWin: 3,
         ssThresh: 1,
         growthMode: TCP_SLOW_START
     };
@@ -44,8 +50,9 @@ Flow.prototype.addDestinationNode = function ( destinationNode ) {
 
 Flow.prototype.sendData = function() {
     // Generate packets
-    for( var i = 0; i < this.packetCount; i++ )
-        this.packets.push(new Packet( i, 'data', 1024, this.sourceNode, this.destinationNode, this.sendCallback ));
+    for( var i = 0; i < this.packetCount; i++ ) {
+            this.packets.push(new Packet( i, 'data', 1024, this.sourceNode, this.destinationNode, this.sendCallback.bind(this) ));
+    }
 
     this.sendMorePackets();
 }
@@ -62,7 +69,7 @@ Flow.prototype.sendCallback = function( ackNumber ) {
     }
 
     return false;
-}
+};
 
 Flow.prototype.updateWindowSize = function( type ) {
     switch( type ) {
@@ -78,14 +85,11 @@ Flow.prototype.updateWindowSize = function( type ) {
 }
 
 Flow.prototype.sendMorePackets = function() {
-    this.updateWindowSize( 'success' );
-
-    this.outstandingPackets = {
-        count: 0
-    };
+    //this.updateWindowSize( 'success' );
 
     var newPackets = [];
-    for( var i = 0; i < Math.min( this.tcp.cWin, this.packets.length ), i++ ) {
+    var pLength = ( this.tcp.cWin < this.packets.length ) ? this.tcp.cWin : this.packets.length;
+    for( var i = 0; i < pLength; i++ ) {
         var packet = this.packets.shift();
         this.outstandingPackets.count++;
         this.outstandingPackets[packet.getId()] = packet;

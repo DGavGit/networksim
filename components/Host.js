@@ -1,3 +1,5 @@
+var Packet = require( './Packet' );
+
 /**
  * Represents a host in a network.
  * @constructor
@@ -21,9 +23,9 @@ Host.prototype.addLink = function( link, destinationNode ) {
 }
 
 Host.prototype.send = function( packets ) {
-    var destination = packet.destinationNode;
+    var destination = packets[0].destinationNode; // Choosing the first destination since they should all be the same
     // TODO: get link from router using destination
-    var link = this.links[ 0 ]; // TODO: THIS IS BAD GET RID OF IT
+    var link = this.links[ 0 ].link; // TODO: THIS IS BAD GET RID OF IT
 
     if ( link.addPackets(packets) ) {
         destination.receivePackets( link );
@@ -35,13 +37,20 @@ Host.prototype.send = function( packets ) {
 }
 
 Host.prototype.receivePackets = function( link ) {
+    var acks = [];
     var packets = link.removePackets( this );
+
     for( var i = 0; i < packets.length; i++ ) {
         if( packets[i].type == 'ack' ) {
-            this.packets[i].callback( packets[i].id );
+            packets[i].callback( packets[i].id );
         } else { // Packet meant for this destination, create ack with reversed source nad destiation, then send back
-
+            var ack = new Packet( packets[i].id, 'ack', 64, packets[i].destinationNode, packets[i].sourceNode, packets[i].callback );
+            acks.push( ack );
         }
+    }
+
+    if ( acks.length ) {
+        this.send( acks );
     }
 }
 

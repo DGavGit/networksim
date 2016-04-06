@@ -9,7 +9,7 @@ var Link = function( linkId, rate, bufferCapacity ) {
     this.id = linkId;
     this.addRate( rate );
     this.buffer = [];
-    this.bufferCapacity = bufferCapacity;
+    this.bufferCapacity = bufferCapacity * 1024;
     this.bufferSize = 0;
 }
 
@@ -57,9 +57,11 @@ Link.prototype.addPackets = function(packets) {
  */
 Link.prototype.removePackets = function( destination ) {
     var packets = [];
-    for (var i = 0; i < this.buffer.length; ++i) {
+    var bufferLength = this.buffer.length
+    for (var i = 0; i < bufferLength; ++i) {
         if (this.buffer[0].destinationNode == destination) {
-            packets.push(this.buffer.shift());
+            var packet = this.buffer.shift();
+            packets.push( packet );
             this.bufferSize -= packet.getSize();
         } else {
             break;

@@ -39,7 +39,7 @@ var case1Network = new Network();
 var c1NodeId1 = case1Network.addNode();
 var c1NodeId2 = case1Network.addNode();
 
-var c1LinkId1 = case1Network.addLink( 10, 64 );
+var c1LinkId1 = case1Network.addLink( c1NodeId1, c1NodeId2, 10, 64 );
 var c1FlowId = case1Network.addFlow( 0, 20, c1NodeId1, c1NodeId2 );
 case1Network.printNetwork();
 console.log( "\nSending message" );
